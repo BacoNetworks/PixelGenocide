@@ -172,7 +172,7 @@ public class PixelGenocide {
 		for (Entity entity : world.loadedEntityList) {
 			if (entity instanceof EntityPixelmon) {
 				EntityPixelmon pixelmon = (EntityPixelmon) entity;
-				if (!(!pixelmon.canDespawn || pixelmon.hasOwner() || pixelmon.battleController != null || pixelmon.getPokemonData().isInRanch() || PGConfig.shouldKeepPokemon(pixelmon))) {
+				if (!(!pixelmon.canDespawn || pixelmon.hasOwner() || pixelmon.battleController != null || PGConfig.shouldKeepPokemon(pixelmon))) {
 					pixelmon.unloadEntity();
 					quantity++;
 				}

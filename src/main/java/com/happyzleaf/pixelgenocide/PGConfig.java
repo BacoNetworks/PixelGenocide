@@ -4,7 +4,7 @@ import com.flowpowered.math.vector.Vector3d;
 import com.google.common.reflect.TypeToken;
 import com.happyzleaf.pixelgenocide.util.GameTime;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
-import com.pixelmonmod.pixelmon.enums.EnumSpecies;
+import com.pixelmonmod.pixelmon.enums.EnumPokemon;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon.dwShiny;
+
 public class PGConfig {
 	private static final ScriptEngine engine = new ScriptEngineManager(null).getEngineByName("Nashorn");
 	
@@ -48,20 +50,19 @@ public class PGConfig {
 	private static boolean keepUltraBeasts = true;
 	private static boolean keepBosses = true;
 	private static boolean keepShinies = true;
-	private static boolean keepWithPokerus = true;
 	private static boolean keepWithParticles = false;
 	private static boolean keepWithinSpecialPlayer = false;
 	private static List<String> whitelist = new ArrayList<>();
 	private static List<String> blacklist = new ArrayList<>();
 	
 	static {
-		whitelist.add(EnumSpecies.Pikachu.name);
-		whitelist.add(EnumSpecies.Eevee.name);
-		whitelist.add(EnumSpecies.Ditto.name);
-		
-		blacklist.add(EnumSpecies.Zubat.name);
-		blacklist.add(EnumSpecies.Geodude.name);
-		blacklist.add(EnumSpecies.Caterpie.name);
+		whitelist.add(EnumPokemon.Pikachu.name);
+		whitelist.add(EnumPokemon.Eevee.name);
+		whitelist.add(EnumPokemon.Ditto.name);
+
+		blacklist.add(EnumPokemon.Zubat.name);
+		blacklist.add(EnumPokemon.Geodude.name);
+		blacklist.add(EnumPokemon.Caterpie.name);
 	}
 	
 	public static void init(ConfigurationLoader<CommentedConfigurationNode> loader, File file) {
@@ -126,7 +127,6 @@ public class PGConfig {
 			
 			PixelGenocide.LOGGER.info("'keep.withPokerus' has been added to your config, please go take a look!");
 		}
-		keepWithPokerus = keep.getNode("withPokerus").getBoolean();
 		keepWithParticles = keep.getNode("withParticles").getBoolean();
 		if (keepWithParticles) {
 			PluginContainer ep = Sponge.getPluginManager().getPlugin("entity-particles").orElse(null);
@@ -171,7 +171,6 @@ public class PGConfig {
 		keep.getNode("ultraBeasts").setValue(keepUltraBeasts);
 		keep.getNode("bosses").setValue(keepBosses);
 		keep.getNode("shinies").setValue(keepShinies);
-		keep.getNode("withPokerus").setValue(keepWithPokerus);
 		keep.getNode("withParticles").setComment("You will need entity-particles for this to work.").setValue(keepWithParticles);
 		keep.getNode("withinSpecialPlayer").setComment("The pixelmon will not be cleared if they're near a player with the permission '" + PixelGenocide.PLUGIN_ID + ".specialplayer'. WARNING: Could cost performance.").setValue(keepWithinSpecialPlayer);
 		keep.getNode("whitelist").setComment("Keep these pixelmon regardless their specs.").setValue(whitelist);
@@ -204,11 +203,10 @@ public class PGConfig {
 		String name = pixelmon.getPokemonName();
 		return whitelist.contains(name)
 				|| !blacklist.contains(name)
-				&& (keepLegendaries && EnumSpecies.legendaries.contains(name)
-				|| keepUltraBeasts && EnumSpecies.ultrabeasts.contains(name)
+				&& (keepLegendaries && EnumPokemon.legendaries.contains(name)
+				|| keepUltraBeasts && EnumPokemon.ultrabeasts.contains(name)
 				|| keepBosses && pixelmon.isBossPokemon()
-				|| keepShinies && pixelmon.getPokemonData().isShiny()
-				|| keepWithPokerus && pixelmon.getPokerus().isPresent()
+				|| keepShinies && pixelmon.getDataManager().get(dwShiny)
 				|| keepWithParticles && hasParticles((Entity) pixelmon)
 				|| keepWithinSpecialPlayer && isWithinSpecialPlayer(pixelmon));
 	}
