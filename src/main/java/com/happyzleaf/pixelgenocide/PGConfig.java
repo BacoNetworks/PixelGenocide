@@ -121,12 +121,6 @@ public class PGConfig {
 		keepUltraBeasts = keep.getNode("ultraBeasts").getBoolean();
 		keepBosses = keep.getNode("bosses").getBoolean();
 		keepShinies = keep.getNode("shinies").getBoolean();
-		if (keep.getNode("withPokerus").isVirtual()) { // Forcing the new config to be generated. One day, i'll write a config library for these kind of things, but not today.
-			keep.getNode("withPokerus").setValue(false);
-			save();
-			
-			PixelGenocide.LOGGER.info("'keep.withPokerus' has been added to your config, please go take a look!");
-		}
 		keepWithParticles = keep.getNode("withParticles").getBoolean();
 		if (keepWithParticles) {
 			PluginContainer ep = Sponge.getPluginManager().getPlugin("entity-particles").orElse(null);
