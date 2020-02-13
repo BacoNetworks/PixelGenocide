@@ -1,6 +1,7 @@
 package com.happyzleaf.pixelgenocide;
 
 import com.google.inject.Inject;
+import com.happyzleaf.pixelgenocide.util.FixSpawningIssueEvents;
 import com.happyzleaf.pixelgenocide.util.Helper;
 import com.happyzleaf.pixelgenocide.util.TimedTask;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
@@ -65,7 +66,7 @@ public class PixelGenocide {
 	@Inject
 	@DefaultConfig(sharedRoot = true)
 	private File configFile;
-	
+
 	@Listener
 	public void init(GameInitializationEvent event) {
 		PGConfig.init(configLoader, configFile);
@@ -119,6 +120,7 @@ public class PixelGenocide {
 	
 	@Listener
 	public void onServerStart(GameStartedServerEvent event) {
+		Sponge.getEventManager().registerListeners(this, new FixSpawningIssueEvents());
 		task();
 	}
 	
@@ -186,11 +188,11 @@ public class PixelGenocide {
 		if (task != null) {
 			Sponge.getScheduler().getTaskById(task).ifPresent(Task::cancel);
 		}
-		
+
 		PGConfig.loadConfig();
-		
+
 		task();
-		
+
 		MessageReceiver receiver = Sponge.getServer().getConsole();
 		if (event.getSource() instanceof MessageReceiver) {
 			receiver = (MessageReceiver) event.getSource();
