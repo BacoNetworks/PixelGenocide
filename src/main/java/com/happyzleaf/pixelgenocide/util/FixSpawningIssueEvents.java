@@ -1,5 +1,6 @@
 package com.happyzleaf.pixelgenocide.util;
 
+import com.happyzleaf.pixelgenocide.PGConfig;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import net.minecraft.entity.Entity;
 import org.spongepowered.api.event.Listener;
@@ -16,7 +17,9 @@ public class FixSpawningIssueEvents {
                 Entity entity = (Entity) s;
                 if (entity instanceof EntityPixelmon) {
                     EntityPixelmon pixelmon = (EntityPixelmon) entity;
-                    pixelmon.unloadEntity();
+                    if (!(!pixelmon.canDespawn || pixelmon.hasOwner() || pixelmon.battleController != null || pixelmon.isInRanchBlock || PGConfig.shouldKeepPokemon(pixelmon))) {
+                        pixelmon.unloadEntity();
+                    }
                 }
             }
         }
@@ -26,7 +29,9 @@ public class FixSpawningIssueEvents {
     public void onEntityDestruct(DestructEntityEvent event) {
         if (event.getTargetEntity() instanceof EntityPixelmon) {
             EntityPixelmon pixelmon = (EntityPixelmon) event.getTargetEntity();
-            pixelmon.unloadEntity();
+            if (!(!pixelmon.canDespawn || pixelmon.hasOwner() || pixelmon.battleController != null || pixelmon.isInRanchBlock || PGConfig.shouldKeepPokemon(pixelmon))) {
+                pixelmon.unloadEntity();
+            }
         }
     }
 }
