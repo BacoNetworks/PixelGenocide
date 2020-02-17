@@ -4,7 +4,9 @@ import com.google.inject.Inject;
 import com.happyzleaf.pixelgenocide.util.FixSpawningIssueEvents;
 import com.happyzleaf.pixelgenocide.util.Helper;
 import com.happyzleaf.pixelgenocide.util.TimedTask;
+import com.pixelmonmod.pixelmon.database.SpawnLocation;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
+import com.pixelmonmod.pixelmon.enums.EnumPokemon;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldInfo;
@@ -174,7 +176,7 @@ public class PixelGenocide {
 		for (Entity entity : world.loadedEntityList) {
 			if (entity instanceof EntityPixelmon) {
 				EntityPixelmon pixelmon = (EntityPixelmon) entity;
-				if (!(!pixelmon.canDespawn || pixelmon.hasOwner() || pixelmon.battleController != null || pixelmon.isInRanchBlock || PGConfig.shouldKeepPokemon(pixelmon))) {
+				if (!(!pixelmon.canDespawn || pixelmon.hasOwner() || pixelmon.battleController != null || pixelmon.isInRanchBlock || PGConfig.shouldKeepPokemon(pixelmon) || pixelmon.isShiny() || EnumPokemon.legendaries.contains(pixelmon.getName()))) {
 					pixelmon.unloadEntity();
 					quantity++;
 				}
